@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay Recommendations - AI Tourist Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <style>
+        body{ background-color: #f8f9fa; }
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 50px 0; }
+        .section-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .section-title { border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 20px; color: #667eea; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Travel Planner</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="plan.html">Back to Plan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero text-center">
+        <div class="container">
+            <h1 class="display-4"><i class="fas fa-bed"></i> Stay Recommendations</h1>
+            <p class="lead">Find the perfect accommodation for your trip</p>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        <div class="section-card">
+            <h2 class="section-title"><i class="fas fa-bed"></i> Stay Recommendations</h2>
+            <div id="stayRec"></div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2023 AI Travel Planner. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const destination = getQueryParam('destination');
+        const totalBudget = parseFloat(getQueryParam('budget'));
+        const numDays = parseInt(getQueryParam('days'));
+        const numPeople = parseInt(getQueryParam('people'));
+        const travelDates = getQueryParam('dates');
+        const foodPreference = getQueryParam('food');
+        const accommodationPreference = getQueryParam('accommodation');
+
+        // Data for all destinations
+        const placesData = {
+            "agra": { "stay_recommendations": ["- Budget hotels in Taj Ganj area near Taj Mahal.", "- Hostels like Zostel Agra or Treebo.", "- Proximity to railway station for easy access."] },
+            "delhi": { "stay_recommendations": ["- Budget hotels in Paharganj or Karol Bagh.", "- Hostels near New Delhi Railway Station.", "- Metro-accessible locations."] },
+            "jaipur": { "stay_recommendations": ["- Budget hotels in Bani Park or near Hawa Mahal.", "- Hostels in the Pink City area.", "- Central locations for easy access."] },
+            "mumbai": { "stay_recommendations": ["- Budget hotels in Dadar, Bandra, or Andheri.", "- Hostels near CST or Bandra stations.", "- Suburban locations for affordability."] },
+            "goa": { "stay_recommendations": ["- Budget guesthouses in Calangute or Baga.", "- Hostels in Anjuna or Vagator.", "- Beachfront options."] },
+            "kerala": { "stay_recommendations": ["- Houseboats in Alleppey or Kumarakom.", "- Budget resorts in Munnar.", "- Homestays in Kochi."] },
+            "bangalore": { "stay_recommendations": ["- Budget hotels in MG Road or Jayanagar.", "- Hostels in Indiranagar or Koramangala.", "- Central locations."] },
+            "chennai": { "stay_recommendations": ["- Budget hotels in T. Nagar or Anna Nagar.", "- Hostels near Marina Beach.", "- Proximity to temples."] },
+            "hyderabad": { "stay_recommendations": ["- Budget hotels in Banjara Hills or Secunderabad.", "- Hostels near Hussain Sagar Lake.", "- Central locations."] },
+            "kolkata": { "stay_recommendations": ["- Budget hotels in Sudder Street or Park Street.", "- Hostels near Victoria Memorial.", "- Colonial areas."] },
+            "pune": { "stay_recommendations": ["- Budget hotels in Koregaon Park or FC Road.", "- Hostels near Pune University.", "- Educational city."] },
+            "ahmedabad": { "stay_recommendations": ["- Budget hotels in Navrangpura or CG Road.", "- Hostels near Sidi Saiyed Mosque.", "- Textile city."] },
+            "lucknow": { "stay_recommendations": ["- Budget hotels in Hazratganj or Aminabad.", "- Hostels near Bara Imambara.", "- Nawabi architecture."] },
+            "udaipur": { "stay_recommendations": ["- Lakeview hotels or heritage palaces.", "- Budget options near City Palace.", "- Romantic vibe."] },
+            "varanasi": { "stay_recommendations": ["- Ghatside ashrams or budget hotels.", "- Hostels near Dashashwamedh Ghat.", "- Spiritual atmosphere."] },
+            "shimla": { "stay_recommendations": ["- Budget hotels in Mall Road area.", "- Hostels near Ridge.", "- Hill station charm."] },
+            "manali": { "stay_recommendations": ["- Budget hotels in Old Manali.", "- Hostels near Hadimba Temple.", "- Scenic locations."] },
+            "amritsar": { "stay_recommendations": ["- Budget hotels near Golden Temple.", "- Hostels in old city.", "- Spiritual stay options."] },
+            "rishikesh": { "stay_recommendations": ["- Ashrams or budget hotels in Laxman Jhula.", "- Hostels near Ganges.", "- Yoga retreat options."] }
+        };
+
+        function generateStay(destination) {
+            const data = placesData[destination.toLowerCase()];
+            let recommendations = [];
+            let isGeneric = false;
+            
+            if (data && data.stay_recommendations) {
+                recommendations = data.stay_recommendations;
+            } else {
+                recommendations = ["- Budget hotels near city center or railway station.", "- Hostels like Zostel or similar budget options.", "- Proximity to main attractions for easy access."];
+                isGeneric = true;
+            }
+
+            let html = '<ul>';
+            recommendations.forEach(rec => { html += `<li>${rec}</li>`; });
+            html += '</ul>';
+            if (isGeneric) html += '<div class="alert alert-info mt-3">Note: This is generic accommodation info for ' + destination + '.</div>';
+            document.getElementById('stayRec').innerHTML = html;
+        }
+
+        generateStay(destination);
+    </script>
+</body>
+</html>
