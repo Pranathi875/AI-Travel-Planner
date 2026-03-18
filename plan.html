@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Travel Plan - AI Tourist Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Poppins', sans-serif; }
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 80px 0; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 1; }
+        .hero .container { position: relative; z-index: 2; }
+        .hero h1 { font-size: 3rem; font-weight: 700; animation: fadeInUp 1s ease-out; }
+        .section-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); margin-bottom: 30px; transition: all 0.3s ease; }
+        .section-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .section-title { border-bottom: 3px solid #667eea; padding-bottom: 15px; margin-bottom: 25px; color: #667eea; font-weight: 600; }
+        .table th { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+        .itinerary-day { margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #667eea; }
+        .itinerary-day strong { color: #667eea; font-size: 1.1rem; }
+        .btn-primary { background: linear-gradient(45deg, #667eea, #764ba2); border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-on-scroll { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .animate-on-scroll.animate { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Travel Planner</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#plan">Your Plan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero text-center">
+        <div class="container">
+            <h1 class="display-4 animate__animated animate__fadeInDown"><i class="fas fa-route"></i> Your Personalized Travel Plan</h1>
+            <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Enjoy your cost-optimized trip!</p>
+        </div>
+    </section>
+
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Budget Section -->
+            <div class="col-lg-6 col-md-12">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-money-bill-wave"></i> Budget Breakdown <a id="budgetLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="budgetBreakdown"></div>
+                </div>
+            </div>
+            <!-- Itinerary Section -->
+            <div class="col-lg-6 col-md-12">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-calendar-alt"></i> Daily Itinerary <a id="itineraryLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="itinerary"></div>
+                </div>
+            </div>
+            <!-- Stay Section -->
+            <div class="col-lg-4 col-md-6">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-bed"></i> Stay Recommendations <a id="stayLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="stayRec"></div>
+                </div>
+            </div>
+            <!-- Food Section -->
+            <div class="col-lg-4 col-md-6">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-utensils"></i> Food Recommendations <a id="foodLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="foodRec"></div>
+                </div>
+            </div>
+            <!-- Transport Section -->
+            <div class="col-lg-4 col-md-6">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-bus"></i> Transportation Plan <a id="transportLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="transport"></div>
+                </div>
+            </div>
+            <!-- Tips Section -->
+            <div class="col-lg-6 col-md-12">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-lightbulb"></i> Money-Saving Tips <a id="tipsLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="tips"></div>
+                </div>
+            </div>
+            <!-- Route Section -->
+            <div class="col-lg-6 col-md-12">
+                <div class="section-card h-100">
+                    <h3 class="section-title"><i class="fas fa-route"></i> Optimized Route Plan <a id="routeLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="route"></div>
+                </div>
+            </div>
+            <!-- Summary Section -->
+            <div class="col-12">
+                <div class="section-card">
+                    <h3 class="section-title"><i class="fas fa-chart-line"></i> Final Budget Summary <a id="summaryLink" href="#" target="_blank" class="btn btn-sm btn-outline-primary ms-2">View Details</a></h3>
+                    <div id="summary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2023 AI Travel Planner. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sectionLinks = document.querySelectorAll('.section-link');
+            sectionLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const newUrl = `${section}.html?${urlParams.toString()}`;
+                    window.open(newUrl, '_blank');
+                });
+            });
+        });
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const destination = getQueryParam('destination');
+        const totalBudget = parseFloat(getQueryParam('budget'));
+        const numDays = parseInt(getQueryParam('days'));
+        const numPeople = parseInt(getQueryParam('people'));
+        const travelDates = getQueryParam('dates');
+        const foodPreference = getQueryParam('food');
+        const accommodationPreference = getQueryParam('accommodation');
+
+        const placesData = {
+            "agra": {
+                "stay_cost_per_night": 600,
+                "food_cost_per_meal": 120,
+                "transport_cost_per_day": 250,
+                "entry_tickets": 90,
+                "buffer": 1000,
+                "stay_recommendations": [
+                    "- Budget hotels in Taj Ganj area near Taj Mahal.",
+                    "- Hostels like Zostel Agra or Treebo.",
+                    "- Proximity to railway station for easy access."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Petha, Mughlai Biryani, Bedai.",
+                    "- Affordable places: Local dhabas in Taj Ganj, street food near Agra Fort.",
+                    "- Approximate price per meal: ₹120"
+                ],
+                "itinerary": [
+                    "Day 1: Taj Mahal (sunrise visit), Agra Fort.",
+                    "Day 2: Fatehpur Sikri, Sikandra Tomb."
+                ],
+                "transport_plan": [
+                    "- Auto-rickshaws or e-rickshaws.",
+                    "- Shared taxis for Fatehpur Sikri."
+                ],
+                "tips": [
+                    "- Book Taj Mahal tickets online to avoid queues.",
+                    "- Visit during winter for pleasant weather."
+                ],
+                "route_plan": [
+                    "- Start from Taj Mahal, then Agra Fort, end with Fatehpur Sikri."
+                ]
+            },
+            "delhi": {
+                "stay_cost_per_night": 800,
+                "food_cost_per_meal": 150,
+                "transport_cost_per_day": 300,
+                "entry_tickets": 500,
+                "buffer": 1500,
+                "stay_recommendations": [
+                    "- Budget hotels in Paharganj or Karol Bagh.",
+                    "- Hostels near New Delhi Railway Station.",
+                    "- Metro-accessible locations."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Butter Chicken, Chole Bhature, Paratha.",
+                    "- Affordable places: Street food in Chandni Chowk, local eateries in Connaught Place.",
+                    "- Approximate price per meal: ₹150"
+                ],
+                "itinerary": [
+                    "Day 1: Red Fort, Jama Masjid, Chandni Chowk.",
+                    "Day 2: India Gate, Rashtrapati Bhavan, Lotus Temple.",
+                    "Day 3: Qutub Minar, Humayun's Tomb."
+                ],
+                "transport_plan": [
+                    "- Delhi Metro (cheap and efficient).",
+                    "- Auto-rickshaws or Ola/Uber."
+                ],
+                "tips": [
+                    "- Use Metro for long distances.",
+                    "- Carry water and avoid peak heat."
+                ],
+                "route_plan": [
+                    "- Old Delhi in morning, New Delhi in afternoon."
+                ]
+            },
+            "jaipur": {
+                "stay_cost_per_night": 650,
+                "food_cost_per_meal": 130,
+                "transport_cost_per_day": 280,
+                "entry_tickets": 600,
+                "buffer": 1200,
+                "stay_recommendations": [
+                    "- Budget hotels in Bani Park or near Hawa Mahal.",
+                    "- Hostels in the Pink City area.",
+                    "- Central locations for easy access."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Dal Baati Churma, Laal Maas, Ghewar.",
+                    "- Affordable places: Local restaurants, street food in Johari Bazaar.",
+                    "- Approximate price per meal: ₹130"
+                ],
+                "itinerary": [
+                    "Day 1: City Palace, Jantar Mantar, Hawa Mahal.",
+                    "Day 2: Amber Fort, Jaigarh Fort.",
+                    "Day 3: Nahargarh Fort, local markets."
+                ],
+                "transport_plan": [
+                    "- Auto-rickshaws or shared jeeps.",
+                    "- Taxis for Amber Fort."
+                ],
+                "tips": [
+                    "- Visit Amber Fort early to beat crowds.",
+                    "- Bargain at markets."
+                ],
+                "route_plan": [
+                    "- Central Jaipur first, then forts."
+                ]
+            },
+            "mumbai": {
+                "stay_cost_per_night": 900,
+                "food_cost_per_meal": 180,
+                "transport_cost_per_day": 350,
+                "entry_tickets": 400,
+                "buffer": 2000,
+                "stay_recommendations": [
+                    "- Budget hotels in Dadar, Bandra, or Andheri.",
+                    "- Hostels near CST or Bandra stations.",
+                    "- Suburban locations for affordability."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Vada Pav, Pav Bhaji, Misal Pav, Seafood.",
+                    "- Affordable places: Street food in Chowpatty, local cafes.",
+                    "- Approximate price per meal: ₹180"
+                ],
+                "itinerary": [
+                    "Day 1: Gateway of India, Elephanta Caves ferry.",
+                    "Day 2: Marine Drive, Chowpatty Beach, Mahalaxmi Temple.",
+                    "Day 3: Bollywood tour, Juhu Beach."
+                ],
+                "transport_plan": [
+                    "- Local trains (Mumbai Suburban Railway).",
+                    "- Auto-rickshaws or taxis."
+                ],
+                "tips": [
+                    "- Avoid peak hours for trains.",
+                    "- Carry cash for small vendors."
+                ],
+                "route_plan": [
+                    "- South Mumbai for monuments, North for beaches."
+                ]
+            },
+            "goa": {
+                "stay_cost_per_night": 1000,
+                "food_cost_per_meal": 200,
+                "transport_cost_per_day": 400,
+                "entry_tickets": 100,
+                "buffer": 1800,
+                "stay_recommendations": [
+                    "- Budget guesthouses in Calangute or Baga.",
+                    "- Hostels in Anjuna or Vagator.",
+                    "- Beachfront options."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Fish Curry Rice, Bebinca, Pork Vindaloo.",
+                    "- Affordable places: Beach shacks, local eateries.",
+                    "- Approximate price per meal: ₹200"
+                ],
+                "itinerary": [
+                    "Day 1: Calangute and Baga beaches.",
+                    "Day 2: Old Goa churches, Fort Aguada.",
+                    "Day 3: Anjuna flea market, nightlife."
+                ],
+                "transport_plan": [
+                    "- Scooters or bikes for rent.",
+                    "- Buses or taxis between areas."
+                ],
+                "tips": [
+                    "- Respect local customs and dress modestly.",
+                    "- Use sunscreen and stay hydrated."
+                ],
+                "route_plan": [
+                    "- North Goa for beaches, South for history."
+                ]
+            },
+            "kerala": {
+                "stay_cost_per_night": 750,
+                "food_cost_per_meal": 140,
+                "transport_cost_per_day": 320,
+                "entry_tickets": 200,
+                "buffer": 1400,
+                "stay_recommendations": [
+                    "- Houseboats in Alleppey or Kumarakom.",
+                    "- Budget resorts in Munnar.",
+                    "- Homestays in Kochi."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Appam with Fish Curry, Puttu, Avial.",
+                    "- Affordable places: Local toddy shops, roadside eateries.",
+                    "- Approximate price per meal: ₹140"
+                ],
+                "itinerary": [
+                    "Day 1: Fort Kochi, Chinese Fishing Nets.",
+                    "Day 2: Backwater cruise in Alleppey.",
+                    "Day 3: Munnar tea estates."
+                ],
+                "transport_plan": [
+                    "- State buses or trains.",
+                    "- Boats for backwaters."
+                ],
+                "tips": [
+                    "- Book houseboats in advance.",
+                    "- Try local spices."
+                ],
+                "route_plan": [
+                    "- Start from Kochi, then backwaters, hills."
+                ]
+            },
+            "bangalore": {
+                "stay_cost_per_night": 700,
+                "food_cost_per_meal": 160,
+                "transport_cost_per_day": 300,
+                "entry_tickets": 200,
+                "buffer": 1300,
+                "stay_recommendations": [
+                    "- Budget hotels in MG Road or Jayanagar.",
+                    "- Hostels in Indiranagar or Koramangala.",
+                    "- Central locations."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Masala Dosa, Bisi Bele Bath, Filter Coffee.",
+                    "- Affordable places: Darshinis, street food.",
+                    "- Approximate price per meal: ₹160"
+                ],
+                "itinerary": [
+                    "Day 1: Bangalore Palace, Vidhana Soudha.",
+                    "Day 2: ISKCON Temple, Lalbagh Garden.",
+                    "Day 3: Nandi Hills or Wonderla."
+                ],
+                "transport_plan": [
+                    "- Metro and BMTC buses.",
+                    "- Ola/Uber."
+                ],
+                "tips": [
+                    "- Visit during pleasant weather.",
+                    "- Explore tech parks."
+                ],
+                "route_plan": [
+                    "- Central Bangalore first, then outskirts."
+                ]
+            },
+            "chennai": {
+                "stay_cost_per_night": 650,
+                "food_cost_per_meal": 130,
+                "transport_cost_per_day": 270,
+                "entry_tickets": 300,
+                "buffer": 1100,
+                "stay_recommendations": [
+                    "- Budget hotels in T. Nagar or Anna Nagar.",
+                    "- Hostels near Marina Beach.",
+                    "- Proximity to temples."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Idli Sambar, Dosa, Chettinad Chicken.",
+                    "- Affordable places: Local messes, street food.",
+                    "- Approximate price per meal: ₹130"
+                ],
+                "itinerary": [
+                    "Day 1: Marina Beach, Kapaleeshwarar Temple.",
+                    "Day 2: Fort St. George, Government Museum.",
+                    "Day 3: Mahabalipuram day trip."
+                ],
+                "transport_plan": [
+                    "- Local buses and metro.",
+                    "- Auto-rickshaws."
+                ],
+                "tips": [
+                    "- Visit temples early.",
+                    "- Try South Indian filter coffee."
+                ],
+                "route_plan": [
+                    "- South Chennai beaches, North history."
+                ]
+            },
+            "hyderabad": {
+                "stay_cost_per_night": 680,
+                "food_cost_per_meal": 135,
+                "transport_cost_per_day": 260,
+                "entry_tickets": 400,
+                "buffer": 1200,
+                "stay_recommendations": [
+                    "- Budget hotels in Banjara Hills or Secunderabad.",
+                    "- Hostels near Hussain Sagar Lake.",
+                    "- Central locations."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Hyderabadi Biryani, Haleem, Irani Chai.",
+                    "- Affordable places: Local biryani centers, street food.",
+                    "- Approximate price per meal: ₹135"
+                ],
+                "itinerary": [
+                    "Day 1: Charminar, Mecca Masjid.",
+                    "Day 2: Golconda Fort, Hussain Sagar.",
+                    "Day 3: Salar Jung Museum."
+                ],
+                "transport_plan": [
+                    "- TSRTC buses.",
+                    "- Auto-rickshaws."
+                ],
+                "tips": [
+                    "- Try authentic biryani.",
+                    "- Visit during festivals."
+                ],
+                "route_plan": [
+                    "- Old city monuments, new city lakes."
+                ]
+            },
+            "kolkata": {
+                "stay_cost_per_night": 600,
+                "food_cost_per_meal": 125,
+                "transport_cost_per_day": 240,
+                "entry_tickets": 250,
+                "buffer": 1000,
+                "stay_recommendations": [
+                    "- Budget hotels in Sudder Street or Park Street.",
+                    "- Hostels near Victoria Memorial.",
+                    "- Colonial areas."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Rosogolla, Fish Curry, Phuchka.",
+                    "- Affordable places: Street food, local cafes.",
+                    "- Approximate price per meal: ₹125"
+                ],
+                "itinerary": [
+                    "Day 1: Victoria Memorial, Maidan.",
+                    "Day 2: Howrah Bridge, Kumartuli.",
+                    "Day 3: Dakshineswar Temple."
+                ],
+                "transport_plan": [
+                    "- Local buses and trams.",
+                    "- Ferries on Hooghly."
+                ],
+                "tips": [
+                    "- Explore cultural heritage.",
+                    "- Visit during Durga Puja."
+                ],
+                "route_plan": [
+                    "- Central Kolkata monuments, riverside temples."
+                ]
+            },
+            "pune": {
+                "stay_cost_per_night": 670,
+                "food_cost_per_meal": 140,
+                "transport_cost_per_day": 280,
+                "entry_tickets": 200,
+                "buffer": 1150,
+                "stay_recommendations": [
+                    "- Budget hotels in Koregaon Park or FC Road.",
+                    "- Hostels near Pune University.",
+                    "- Educational city."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Misal Pav, Poha, Maharashtrian Thali.",
+                    "- Affordable places: Local eateries, street food.",
+                    "- Approximate price per meal: ₹140"
+                ],
+                "itinerary": [
+                    "Day 1: Shaniwar Wada, Lal Mahal.",
+                    "Day 2: Aga Khan Palace, Parvati Hill.",
+                    "Day 3: Lonavala day trip."
+                ],
+                "transport_plan": [
+                    "- PMPML buses.",
+                    "- Auto-rickshaws."
+                ],
+                "tips": [
+                    "- Pleasant weather visits.",
+                    "- Nearby hill stations."
+                ],
+                "route_plan": [
+                    "- Old Pune history, new areas parks."
+                ]
+            },
+            "ahmedabad": {
+                "stay_cost_per_night": 630,
+                "food_cost_per_meal": 120,
+                "transport_cost_per_day": 230,
+                "entry_tickets": 300,
+                "buffer": 1050,
+                "stay_recommendations": [
+                    "- Budget hotels in Navrangpura or CG Road.",
+                    "- Hostels near Sidi Saiyed Mosque.",
+                    "- Textile city."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Dhokla, Thepla, Undhiyu.",
+                    "- Affordable places: Fafda joints, street food.",
+                    "- Approximate price per meal: ₹120"
+                ],
+                "itinerary": [
+                    "Day 1: Sabarmati Ashram, Gandhi Ashram.",
+                    "Day 2: Jama Masjid, Sidi Saiyed Mosque.",
+                    "Day 3: Adalaj Stepwell, Hutheesing Jain Temple."
+                ],
+                "transport_plan": [
+                    "- BRTS buses.",
+                    "- Auto-rickshaws."
+                ],
+                "tips": [
+                    "- Explore textile markets.",
+                    "- Visit during festivals."
+                ],
+                "route_plan": [
+                    "- Central mosques, outskirts stepwells."
+                ]
+            },
+            "lucknow": {
+                "stay_cost_per_night": 640,
+                "food_cost_per_meal": 130,
+                "transport_cost_per_day": 250,
+                "entry_tickets": 250,
+                "buffer": 1100,
+                "stay_recommendations": [
+                    "- Budget hotels in Hazratganj or Aminabad.",
+                    "- Hostels near Bara Imambara.",
+                    "- Nawabi architecture."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Tunday Kebab, Galouti Kebab, Biryani.",
+                    "- Affordable places: Kebab shops, street food.",
+                    "- Approximate price per meal: ₹130"
+                ],
+                "itinerary": [
+                    "Day 1: Bara Imambara, Chhota Imambara.",
+                    "Day 2: Lucknow Residency, Rumi Darwaza.",
+                    "Day 3: Ambedkar Park, markets."
+                ],
+                "transport_plan": [
+                    "- Auto-rickshaws.",
+                    "- Local buses."
+                ],
+                "tips": [
+                    "- Try Awadhi cuisine.",
+                    "- Visit during Muharram."
+                ],
+                "route_plan": [
+                    "- Old Lucknow imambaras, new parks."
+                ]
+            },
+            "udaipur": {
+                "stay_cost_per_night": 720,
+                "food_cost_per_meal": 145,
+                "transport_cost_per_day": 290,
+                "entry_tickets": 500,
+                "buffer": 1300,
+                "stay_recommendations": [
+                    "- Lakeview hotels or heritage palaces.",
+                    "- Budget options near City Palace.",
+                    "- Romantic vibe."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Dal Bati, Gatte ki Sabzi, Mewari food.",
+                    "- Affordable places: Local restaurants, street food.",
+                    "- Approximate price per meal: ₹145"
+                ],
+                "itinerary": [
+                    "Day 1: City Palace, Jagdish Temple.",
+                    "Day 2: Lake Pichola boat, Monsoon Palace.",
+                    "Day 3: Saheliyon ki Bari, markets."
+                ],
+                "transport_plan": [
+                    "- Auto-rickshaws.",
+                    "- Walking in old city."
+                ],
+                "tips": [
+                    "- Boat rides on lakes.",
+                    "- Visit during festivals."
+                ],
+                "route_plan": [
+                    "- City center palaces, lakeside views."
+                ]
+            },
+            "varanasi": {
+                "stay_cost_per_night": 600,
+                "food_cost_per_meal": 115,
+                "transport_cost_per_day": 220,
+                "entry_tickets": 150,
+                "buffer": 950,
+                "stay_recommendations": [
+                    "- Ghatside ashrams or budget hotels.",
+                    "- Hostels near Dashashwamedh Ghat.",
+                    "- Spiritual atmosphere."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Banarasi Paan, Kachori, Lassi.",
+                    "- Affordable places: Ghat cafes, street food.",
+                    "- Approximate price per meal: ₹115"
+                ],
+                "itinerary": [
+                    "Day 1: Ganga Aarti at Dashashwamedh Ghat.",
+                    "Day 2: Sarnath Buddhist sites.",
+                    "Day 3: Temples, narrow lanes."
+                ],
+                "transport_plan": [
+                    "- Cycle rickshaws.",
+                    "- Boat rides on Ganges."
+                ],
+                "tips": [
+                    "- Respect religious sentiments.",
+                    "- Early morning boat rides."
+                ],
+                "route_plan": [
+                    "- Ghats for rituals, Sarnath for history."
+                ]
+            },
+            "shimla": {
+                "stay_cost_per_night": 800,
+                "food_cost_per_meal": 150,
+                "transport_cost_per_day": 300,
+                "entry_tickets": 200,
+                "buffer": 1400,
+                "stay_recommendations": [
+                    "- Budget hotels in Mall Road area.",
+                    "- Hostels near Ridge.",
+                    "- Hill station charm."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Chana Madra, Siddu, Trout.",
+                    "- Affordable places: Local cafes, street food.",
+                    "- Approximate price per meal: ₹150"
+                ],
+                "itinerary": [
+                    "Day 1: Mall Road, Ridge, Christ Church.",
+                    "Day 2: Jakhoo Temple, Summer Hill.",
+                    "Day 3: Kufri day trip."
+                ],
+                "transport_plan": [
+                    "- Walking in town.",
+                    "- Taxis for nearby spots."
+                ],
+                "tips": [
+                    "- Carry warm clothes.",
+                    "- Visit during summer for pleasant weather."
+                ],
+                "route_plan": [
+                    "- Central Shimla first, then outskirts."
+                ]
+            },
+            "manali": {
+                "stay_cost_per_night": 900,
+                "food_cost_per_meal": 180,
+                "transport_cost_per_day": 350,
+                "entry_tickets": 300,
+                "buffer": 1600,
+                "stay_recommendations": [
+                    "- Budget hotels in Old Manali.",
+                    "- Hostels near Hadimba Temple.",
+                    "- Scenic locations."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Thukpa, Trout, Apple Pie.",
+                    "- Affordable places: Local eateries, cafes.",
+                    "- Approximate price per meal: ₹180"
+                ],
+                "itinerary": [
+                    "Day 1: Hadimba Temple, Vashisht Hot Springs.",
+                    "Day 2: Rohtang Pass day trip.",
+                    "Day 3: Solang Valley, adventure activities."
+                ],
+                "transport_plan": [
+                    "- Walking or bikes.",
+                    "- Taxis for passes."
+                ],
+                "tips": [
+                    "- Check weather for Rohtang.",
+                    "- Try adventure sports."
+                ],
+                "route_plan": [
+                    "- Town temples, then valleys."
+                ]
+            },
+            "amritsar": {
+                "stay_cost_per_night": 700,
+                "food_cost_per_meal": 140,
+                "transport_cost_per_day": 280,
+                "entry_tickets": 100,
+                "buffer": 1200,
+                "stay_recommendations": [
+                    "- Budget hotels near Golden Temple.",
+                    "- Hostels in old city.",
+                    "- Spiritual stay options."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Amritsari Kulcha, Lassi, Makhan.",
+                    "- Affordable places: Langar at Golden Temple, street food.",
+                    "- Approximate price per meal: ₹140"
+                ],
+                "itinerary": [
+                    "Day 1: Golden Temple, Jallianwala Bagh.",
+                    "Day 2: Wagah Border ceremony.",
+                    "Day 3: Ram Bagh Garden, markets."
+                ],
+                "transport_plan": [
+                    "- Auto-rickshaws.",
+                    "- Walking in old city."
+                ],
+                "tips": [
+                    "- Visit Golden Temple early.",
+                    "- Respect religious sentiments."
+                ],
+                "route_plan": [
+                    "- Golden Temple first, then history."
+                ]
+            },
+            "rishikesh": {
+                "stay_cost_per_night": 750,
+                "food_cost_per_meal": 140,
+                "transport_cost_per_day": 300,
+                "entry_tickets": 200,
+                "buffer": 1300,
+                "stay_recommendations": [
+                    "- Ashrams or budget hotels in Laxman Jhula.",
+                    "- Hostels near Ganges.",
+                    "- Yoga retreat options."
+                ],
+                "food_recommendations": [
+                    "- Famous dishes: Aloo Puri, Chivda, Fruit.",
+                    "- Affordable places: Cafes, local eateries.",
+                    "- Approximate price per meal: ₹140"
+                ],
+                "itinerary": [
+                    "Day 1: Laxman Jhula, Beatles Ashram.",
+                    "Day 2: Rafting in Ganges.",
+                    "Day 3: Neer Garh Waterfall, meditation."
+                ],
+                "transport_plan": [
+                    "- Walking or bikes.",
+                    "- Taxis for waterfalls."
+                ],
+                "tips": [
+                    "- Try yoga sessions.",
+                    "- Respect ashram rules."
+                ],
+                "route_plan": [
+                    "- Riverside activities, then hills."
+                ]
+            }
+        };
+
+        function generatePlan(destination, totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            let data = placesData[destination.toLowerCase()];
+            let isGeneric = false;
+            if (!data) {
+                // Generic data for unknown cities
+                data = {
+                    stay_cost_per_night: 700,
+                    food_cost_per_meal: 130,
+                    transport_cost_per_day: 250,
+                    entry_tickets: 300,
+                    buffer: 1200,
+                    stay_recommendations: [
+                        "- Budget hotels near city center or railway station.",
+                        "- Hostels like Zostel or similar budget options.",
+                        "- Proximity to main attractions for easy access."
+                    ],
+                    food_recommendations: [
+                        "- Famous local dishes and street food.",
+                        "- Affordable places: Local eateries, cafes, and street vendors.",
+                        "- Approximate price per meal: ₹130"
+                    ],
+                    itinerary: [
+                        "Day 1: Explore main attractions and landmarks.",
+                        "Day 2: Visit nearby historical sites and markets.",
+                        "Day 3: Relax and enjoy local culture."
+                    ],
+                    transport_plan: [
+                        "- Use local buses, auto-rickshaws, or metro if available.",
+                        "- Shared taxis or ride-sharing apps."
+                    ],
+                    tips: [
+                        "- Visit attractions early morning to avoid crowds.",
+                        "- Carry water and use public transport for savings."
+                    ],
+                    route_plan: [
+                        "- Start from city center, visit key monuments, end with markets."
+                    ]
+                };
+                isGeneric = true;
+            }
+
+            const stayCostPerNight = data.stay_cost_per_night;
+            const foodCostPerMeal = data.food_cost_per_meal;
+            const transportCostPerDay = data.transport_cost_per_day;
+            const entryTickets = data.entry_tickets;
+            const buffer = data.buffer;
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Cost</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Stay</td>
+                            <td>₹${totalStay}</td>
+                            <td>₹${stayCostPerNight} per night per person</td>
+                        </tr>
+                        <tr>
+                            <td>Food</td>
+                            <td>₹${totalFood}</td>
+                            <td>₹${foodCostPerMeal} per meal per person</td>
+                        </tr>
+                        <tr>
+                            <td>Transportation</td>
+                            <td>₹${totalTransport}</td>
+                            <td>₹${transportCostPerDay} per day per person</td>
+                        </tr>
+                        <tr>
+                            <td>Entry Tickets</td>
+                            <td>₹${totalTickets}</td>
+                            <td>Total for attractions</td>
+                        </tr>
+                        <tr>
+                            <td>Buffer</td>
+                            <td>₹${totalBuffer}</td>
+                            <td>Extra expenses</td>
+                        </tr>
+                        <tr class="table-primary">
+                            <td><strong>Total Estimated</strong></td>
+                            <td><strong>₹${totalEstimated}</strong></td>
+                            <td>${totalEstimated <= totalBudget ? 'Within budget' : 'Exceeds budget'}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹200-400 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+                ${isGeneric ? '<div class="alert alert-info">Note: This is a generic plan for ' + destination + '. For more accurate details, consider popular attractions in the area.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    ${data.stay_recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    ${data.food_recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                </ul>
+            `;
+
+            let itineraryHtml = '';
+            for (let i = 0; i < Math.min(numDays, data.itinerary.length); i++) {
+                itineraryHtml += `
+                    <div class="itinerary-day">
+                        <strong>${data.itinerary[i]}</strong>
+                        <ul>
+                            <li><strong>Best timing:</strong> ${i === 0 ? 'Morning (9 AM - 12 PM) for main attractions' : i === 1 ? 'Afternoon (1 PM - 5 PM) for excursions' : 'Evening for relaxation'}</li>
+                            <li>Explore local culture and cuisine.</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            if (numDays > data.itinerary.length) {
+                for (let i = data.itinerary.length; i < numDays; i++) {
+                    itineraryHtml += `
+                        <div class="itinerary-day">
+                            <strong>Day ${i + 1}: Free exploration and relaxation</strong>
+                            <ul>
+                                <li>Visit nearby markets or parks.</li>
+                                <li>Enjoy local food and shopping.</li>
+                            </ul>
+                        </div>
+                    `;
+                }
+            }
+            document.getElementById('itinerary').innerHTML = itineraryHtml;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    ${data.transport_plan.map(plan => `<li>${plan}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    ${data.tips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>${data.route_plan[0]}</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+
+            // Set href for detail links
+            const params = new URLSearchParams({
+                destination: destination,
+                budget: totalBudget,
+                days: numDays,
+                people: numPeople,
+                dates: travelDates,
+                food: foodPreference,
+                accommodation: accommodationPreference
+            }).toString();
+
+            document.getElementById('budgetLink').href = `budget.html?${params}`;
+            document.getElementById('itineraryLink').href = `itinerary.html?${params}`;
+            document.getElementById('stayLink').href = `stay.html?${params}`;
+            document.getElementById('foodLink').href = `food.html?${params}`;
+            document.getElementById('transportLink').href = `transport.html?${params}`;
+            document.getElementById('tipsLink').href = `tips.html?${params}`;
+            document.getElementById('routeLink').href = `route.html?${params}`;
+            document.getElementById('summaryLink').href = `summary.html?${params}`;
+        }
+
+        function generatePlanDelhi(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Data for Delhi
+            const stayCostPerNight = 800; // per person
+            const foodCostPerMeal = 150; // per person
+            const transportCostPerDay = 300; // per person
+            const entryTickets = 500; // total
+            const buffer = 1500; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹300 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Connaught Place or New Delhi Railway Station.</li>
+                    <li>Hostels like Wombats The City Hostel or similar.</li>
+                    <li>Location advantage: Near metro stations for easy access.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Butter Chicken, Paratha, Street Food.</li>
+                    <li>Affordable places: Local dhabas, street vendors, cafes.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Red Fort (morning), then India Gate and Rajpath (afternoon).</p>
+                <p>Day 2: Humayun's Tomb and Qutub Minar (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use Delhi Metro, local buses, or auto-rickshaws.</li>
+                    <li>Shared autos or Ola/Uber for longer distances.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Buy a Delhi Metro pass for unlimited rides.</li>
+                    <li>Visit monuments early morning to avoid crowds.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from New Delhi Railway Station, visit Red Fort, then India Gate, then Qutub Minar.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanJaipur(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Jaipur
+            const stayCostPerNight = 550; // per person
+            const foodCostPerMeal = 110; // per person
+            const transportCostPerDay = 220; // per person
+            const entryTickets = 600; // total
+            const buffer = 1100; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹250 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Pink City area or railway station.</li>
+                    <li>Hostels like Zostel Jaipur or similar.</li>
+                    <li>Location advantage: Near bus stand for easy access.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Dal Baati Churma, Rajasthani cuisine.</li>
+                    <li>Affordable places: Local eateries, street food stalls.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Amber Fort (morning), then City Palace (afternoon).</p>
+                <p>Day 2: Hawa Mahal and Jantar Mantar (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Walkable in Pink City area.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Visit during off-peak hours for discounts.</li>
+                    <li>Use government transport for Amber Fort.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from railway station, visit Amber Fort, then City Palace, then Hawa Mahal.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanMumbai(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Mumbai
+            const stayCostPerNight = 700; // per person
+            const foodCostPerMeal = 130; // per person
+            const transportCostPerDay = 300; // per person
+            const entryTickets = 900; // total
+            const buffer = 1500; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹400 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near CST or Bandra area.</li>
+                    <li>Hostels like The Bombay Hostel or similar.</li>
+                    <li>Location advantage: Near local train stations.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Vada Pav, Pav Bhaji, Seafood.</li>
+                    <li>Affordable places: Street food, local cafes, dhabas.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Gateway of India (morning), then Elephanta Caves (afternoon).</p>
+                <p>Day 2: Marine Drive and Chowpatty Beach (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local trains, buses, or auto-rickshaws.</li>
+                    <li>Metro for some areas, shared autos.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Buy a local train pass for unlimited rides.</li>
+                    <li>Visit beaches in the evening for free.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from CST, visit Gateway, then Elephanta, then Marine Drive.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanGoa(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Goa
+            const stayCostPerNight = 650; // per person
+            const foodCostPerMeal = 140; // per person
+            const transportCostPerDay = 250; // per person
+            const entryTickets = 700; // total
+            const buffer = 1300; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹350 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Calangute or Panaji area.</li>
+                    <li>Hostels like Zostel Goa or similar.</li>
+                    <li>Location advantage: Near beaches for easy access.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Fish Curry, Prawns, Goan cuisine.</li>
+                    <li>Affordable places: Beach shacks, local eateries.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Calangute Beach (morning), then Fort Aguada (afternoon).</p>
+                <p>Day 2: Dudhsagar Falls and Spice Plantations (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Motorcycle rentals for beaches.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Visit during off-season for lower prices.</li>
+                    <li>Use government buses for falls.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Panaji, visit Calangute, then Fort Aguada, then Dudhsagar.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanKerala(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Kerala
+            const stayCostPerNight = 600; // per person
+            const foodCostPerMeal = 120; // per person
+            const transportCostPerDay = 230; // per person
+            const entryTickets = 750; // total
+            const buffer = 1200; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹300 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Kochi or Munnar area.</li>
+                    <li>Hostels like Zostel Kerala or similar.</li>
+                    <li>Location advantage: Near backwaters for easy access.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Appam, Fish Curry, Kerala cuisine.</li>
+                    <li>Affordable places: Local eateries, houseboats.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Fort Kochi (morning), then Chinese Fishing Nets (afternoon).</p>
+                <p>Day 2: Munnar Tea Gardens (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or houseboats.</li>
+                    <li>Shared taxis for hill stations.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Book houseboat tours in advance.</li>
+                    <li>Visit during monsoon for discounts.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Kochi, visit Fort Kochi, then Munnar.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanBangalore(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Bangalore
+            const stayCostPerNight = 550; // per person
+            const foodCostPerMeal = 110; // per person
+            const transportCostPerDay = 210; // per person
+            const entryTickets = 650; // total
+            const buffer = 1100; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹250 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near MG Road or Majestic area.</li>
+                    <li>Hostels like Zostel Bangalore or similar.</li>
+                    <li>Location advantage: Near metro stations.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Masala Dosa, Bisi Bele Bath, South Indian cuisine.</li>
+                    <li>Affordable places: Local cafes, street food.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Bangalore Palace (morning), then Lalbagh Botanical Garden (afternoon).</p>
+                <p>Day 2: Cubbon Park and Vidhana Soudha (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use Bangalore Metro, local buses, or auto-rickshaws.</li>
+                    <li>Shared autos for longer distances.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Buy a metro pass for unlimited rides.</li>
+                    <li>Visit gardens early morning.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Majestic, visit Palace, then Lalbagh, then Cubbon Park.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanChennai(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Chennai
+            const stayCostPerNight = 600; // per person
+            const foodCostPerMeal = 120; // per person
+            const transportCostPerDay = 220; // per person
+            const entryTickets = 700; // total
+            const buffer = 1200; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹300 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near T. Nagar or Marina Beach area.</li>
+                    <li>Hostels like Zostel Chennai or similar.</li>
+                    <li>Location advantage: Near local train stations.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Idli, Dosa, Chettinad cuisine.</li>
+                    <li>Affordable places: Local eateries, street food stalls.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Marina Beach (morning), then Kapaleeshwarar Temple (afternoon).</p>
+                <p>Day 2: Fort St. George and Government Museum (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local trains, buses, or auto-rickshaws.</li>
+                    <li>Metro for some areas, shared autos.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Buy a local train pass for unlimited rides.</li>
+                    <li>Visit beaches in the evening for free.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Chennai Central, visit Marina Beach, then Temple, then Fort.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanHyderabad(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Hyderabad
+            const stayCostPerNight = 650; // per person
+            const foodCostPerMeal = 130; // per person
+            const transportCostPerDay = 230; // per person
+            const entryTickets = 750; // total
+            const buffer = 1300; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹350 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Banjara Hills or Secunderabad area.</li>
+                    <li>Hostels like Zostel Hyderabad or similar.</li>
+                    <li>Location advantage: Near metro stations.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Biryani, Haleem, Hyderabadi cuisine.</li>
+                    <li>Affordable places: Local dhabas, street food.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Charminar (morning), then Golconda Fort (afternoon).</p>
+                <p>Day 2: Hussain Sagar Lake and Buddha Statue (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use Hyderabad Metro, local buses, or auto-rickshaws.</li>
+                    <li>Shared autos for longer distances.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Buy a metro pass for unlimited rides.</li>
+                    <li>Visit monuments early morning to avoid crowds.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Secunderabad, visit Charminar, then Golconda, then Hussain Sagar.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanKolkata(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Kolkata
+            const stayCostPerNight = 550; // per person
+            const foodCostPerMeal = 110; // per person
+            const transportCostPerDay = 200; // per person
+            const entryTickets = 600; // total
+            const buffer = 1100; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹250 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Park Street or Howrah area.</li>
+                    <li>Hostels like Zostel Kolkata or similar.</li>
+                    <li>Location advantage: Near metro stations.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Rosogolla, Fish Curry, Bengali cuisine.</li>
+                    <li>Affordable places: Local eateries, street food.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Victoria Memorial (morning), then Howrah Bridge (afternoon).</p>
+                <p>Day 2: Dakshineswar Temple and Kumartuli (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use Kolkata Metro, local buses, or auto-rickshaws.</li>
+                    <li>Shared autos for longer distances.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Buy a metro pass for unlimited rides.</li>
+                    <li>Visit temples early morning.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Howrah, visit Victoria Memorial, then Bridge, then Dakshineswar.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanPune(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Pune
+            const stayCostPerNight = 600; // per person
+            const foodCostPerMeal = 120; // per person
+            const transportCostPerDay = 220; // per person
+            const entryTickets = 650; // total
+            const buffer = 1200; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹300 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near FC Road or Shivaji Nagar area.</li>
+                    <li>Hostels like Zostel Pune or similar.</li>
+                    <li>Location advantage: Near bus stands.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Misal Pav, Poha, Maharashtrian cuisine.</li>
+                    <li>Affordable places: Local eateries, street food stalls.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Shaniwar Wada (morning), then Aga Khan Palace (afternoon).</p>
+                <p>Day 2: Sinhagad Fort and Parvati Hill (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Metro for some areas.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Use PMPML buses for cheap travel.</li>
+                    <li>Visit forts early morning.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Pune Station, visit Shaniwar Wada, then Palace, then Sinhagad.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanAhmedabad(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Ahmedabad
+            const stayCostPerNight = 550; // per person
+            const foodCostPerMeal = 110; // per person
+            const transportCostPerDay = 200; // per person
+            const entryTickets = 600; // total
+            const buffer = 1100; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹250 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near CG Road or Maninagar area.</li>
+                    <li>Hostels like Zostel Ahmedabad or similar.</li>
+                    <li>Location advantage: Near bus stands.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Dhokla, Thepla, Gujarati cuisine.</li>
+                    <li>Affordable places: Local eateries, street food stalls.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Sabarmati Ashram (morning), then Gandhi Ashram (afternoon).</p>
+                <p>Day 2: Adalaj Stepwell and Hutheesing Jain Temple (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use BRTS buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Metro for some areas.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Use BRTS for cheap and fast travel.</li>
+                    <li>Visit temples early morning.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Ahmedabad Station, visit Sabarmati Ashram, then Gandhi Ashram, then Stepwell.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanLucknow(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Lucknow
+            const stayCostPerNight = 600; // per person
+            const foodCostPerMeal = 120; // per person
+            const transportCostPerDay = 220; // per person
+            const entryTickets = 650; // total
+            const buffer = 1200; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹300 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Hazratganj or Aminabad area.</li>
+                    <li>Hostels like Zostel Lucknow or similar.</li>
+                    <li>Location advantage: Near bus stands.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Tunday Kebab, Galouti Kebab, Awadhi cuisine.</li>
+                    <li>Affordable places: Local eateries, street food stalls.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit Bara Imambara (morning), then Chota Imambara (afternoon).</p>
+                <p>Day 2: Lucknow Zoo and Rumi Darwaza (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Metro for some areas.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Visit during off-peak hours for discounts.</li>
+                    <li>Use government transport for monuments.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Lucknow Station, visit Bara Imambara, then Chota Imambara, then Zoo.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanUdaipur(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Udaipur
+            const stayCostPerNight = 700; // per person
+            const foodCostPerMeal = 140; // per person
+            const transportCostPerDay = 250; // per person
+            const entryTickets = 800; // total
+            const buffer = 1400; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹400 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near City Palace or Lake Pichola area.</li>
+                    <li>Hostels like Zostel Udaipur or similar.</li>
+                    <li>Location advantage: Near lakes for scenic views.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Dal Baati Churma, Laal Maas, Rajasthani cuisine.</li>
+                    <li>Affordable places: Local eateries, lakeside cafes.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Visit City Palace (morning), then Jagdish Temple (afternoon).</p>
+                <p>Day 2: Lake Pichola boat ride and Saheliyon ki Bari (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Walkable in old city area.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Visit during off-peak hours for discounts.</li>
+                    <li>Take boat rides in the evening for better views.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Udaipur Station, visit City Palace, then Temple, then Lake Pichola.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        function generatePlanVaranasi(totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference) {
+            // Sample data for Varanasi
+            const stayCostPerNight = 550; // per person
+            const foodCostPerMeal = 110; // per person
+            const transportCostPerDay = 200; // per person
+            const entryTickets = 600; // total
+            const buffer = 1100; // total
+
+            const totalStay = stayCostPerNight * numDays * numPeople;
+            const totalFood = foodCostPerMeal * 3 * numDays * numPeople; // 3 meals
+            const totalTransport = transportCostPerDay * numDays * numPeople;
+            const totalTickets = entryTickets;
+            const totalBuffer = buffer;
+            const totalEstimated = totalStay + totalFood + totalTransport + totalTickets + totalBuffer;
+
+            document.getElementById('budgetBreakdown').innerHTML = `
+                <p>Stay cost: ₹${totalStay} (₹${stayCostPerNight} per night per person)</p>
+                <p>Food cost: ₹${totalFood} (₹${foodCostPerMeal} per meal per person)</p>
+                <p>Transportation cost: ₹${totalTransport} (₹${transportCostPerDay} per day per person)</p>
+                <p>Entry tickets: ₹${totalTickets}</p>
+                <p>Extra buffer: ₹${totalBuffer}</p>
+                <p><strong>Total estimated: ₹${totalEstimated}</strong></p>
+                ${totalEstimated > totalBudget ? '<div class="alert alert-warning">Warning: Estimated cost exceeds budget.<br>Alternative plans:<br>- Reduce stay quality: Switch to hostels (save ₹250 per night per person).<br>- Use overnight travel: Take night buses to save on accommodation.<br>- Prioritize must-visit places: Skip less famous attractions.</div>' : ''}
+            `;
+
+            document.getElementById('stayRec').innerHTML = `
+                <ul>
+                    <li>Budget hotels near Assi Ghat or Dashashwamedh Ghat area.</li>
+                    <li>Hostels like Zostel Varanasi or similar.</li>
+                    <li>Location advantage: Near ghats for spiritual experience.</li>
+                </ul>
+            `;
+
+            document.getElementById('foodRec').innerHTML = `
+                <ul>
+                    <li>Famous dishes: Kachori, Banarasi Paan, local cuisine.</li>
+                    <li>Affordable places: Ghat cafes, street food stalls.</li>
+                    <li>Approximate price per meal: ₹${foodCostPerMeal}</li>
+                </ul>
+            `;
+
+            document.getElementById('itinerary').innerHTML = `
+                <p>Day 1: Ganga Aarti at Dashashwamedh Ghat (evening), then Sarnath (afternoon).</p>
+                <p>Day 2: Kashi Vishwanath Temple and Ramnagar Fort (day trip).</p>
+            `;
+
+            document.getElementById('transport').innerHTML = `
+                <ul>
+                    <li>Use local buses, auto-rickshaws, or shared taxis.</li>
+                    <li>Cycle rickshaws for short distances in old city.</li>
+                </ul>
+            `;
+
+            document.getElementById('tips').innerHTML = `
+                <ul>
+                    <li>Attend Ganga Aarti for free spiritual experience.</li>
+                    <li>Visit Sarnath early morning to avoid crowds.</li>
+                </ul>
+            `;
+
+            document.getElementById('route').innerHTML = `
+                <p>Start from Varanasi Junction, visit Dashashwamedh Ghat, then Sarnath, then Vishwanath Temple.</p>
+            `;
+
+            document.getElementById('summary').innerHTML = `
+                <p>Total estimated spending: ₹${totalEstimated}</p>
+                <p>Within budget: <strong>${totalEstimated <= totalBudget ? 'Yes' : 'No'}</strong></p>
+            `;
+        }
+
+        // Call the main generatePlan function which handles all destinations
+        generatePlan(destination, totalBudget, numDays, numPeople, travelDates, foodPreference, accommodationPreference);
+    </script>
+</body>
+</html>
